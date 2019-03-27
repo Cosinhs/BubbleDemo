@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
     <title>BGBubble</title>
     <style>
         * {
@@ -110,7 +111,7 @@
       const width = window.innerWidth
       const height = window.innerHeight
       this.color += 1
-	  this.color %= 360
+      this.color %= 360
       this.ctx.fillStyle = `hsl(${this.color},100%,95%)`
       this.ctx.fillRect(0, 0, width, height);
       if (this.bubbleNum.length < this.userOpts.num && Math.random() < this.userOpts.start_probability) {
@@ -128,7 +129,7 @@
       window.onresize = null
     }
 	
-	resume() {
+    resume() {
       this.stop = false
       const requestAnimationFrame = this.requestAnimationFrame
       this.myReq = requestAnimationFrame(() => this.start())   
