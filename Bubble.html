@@ -122,14 +122,14 @@
     }
 
     destory() {
-	  this.stop = true
+      this.stop = true
       const cancelAnimationFrame = this.cancelAnimationFrame
       cancelAnimationFrame(this.myReq)
       window.onresize = null
     }
 	
 	resume() {
-	  this.stop = false
+      this.stop = false
       const requestAnimationFrame = this.requestAnimationFrame
       this.myReq = requestAnimationFrame(() => this.start())   
       window.onresize = () => {
