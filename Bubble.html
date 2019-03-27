@@ -33,15 +33,16 @@
         is_same_color: false          //泡泡颜色是否相同
       }
       if (Object.prototype.toString.call(opts) == "[object Object]") {
-        this.userOpts = {...this.defaultOpts, ...opts};
+        this.userOpts = {...this.defaultOpts, ...opts}
       } else {
-        this.userOpts = {...this.defaultOpts, id: opts};
+        this.userOpts = {...this.defaultOpts, id: opts}
       }
       this.color = this.random(0, 360)
       this.bubbleNum = []
       this.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
         window.webkitRequestAnimationFrame || window.msRequestAnimationFrame
       this.cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame
+	  this.stop = false
     }
 
     random(a, b) {
@@ -84,14 +85,21 @@
     createCanvas() {
       this.canvas = document.createElement('canvas')
       this.ctx = this.canvas.getContext('2d')
-      this.canvas.style.display = 'block'        //防止全屏的canvas出现滚动条
+      //this.canvas.style.display = 'block'        //防止全屏的canvas出现滚动条
       this.canvas.width = window.innerWidth
       this.canvas.height = window.innerHeight
       this.canvas.style.position = 'fixed'
       this.canvas.style.top = '0'
       this.canvas.style.left = '0'
-      this.canvas.style.zIndex = '-1'
+      //this.canvas.style.zIndex = '-1'
       document.getElementById(this.userOpts.id).appendChild(this.canvas)
+	  this.canvas.ondblclick = () => {
+	    if (!this.stop) {
+		  this.destory()
+		} else {
+		  this.resume()
+		}
+	  }
       window.onresize = () => {
         this.canvas.width = window.innerWidth
         this.canvas.height = window.innerHeight
@@ -101,8 +109,9 @@
     start() {
       const width = window.innerWidth
       const height = window.innerHeight
-      this.color += 0.1
-      this.ctx.fillStyle = `hsl(${this.color},100%,97%)`
+      this.color += 1
+	  this.color %= 360
+      this.ctx.fillStyle = `hsl(${this.color},100%,95%)`
       this.ctx.fillRect(0, 0, width, height);
       if (this.bubbleNum.length < this.userOpts.num && Math.random() < this.userOpts.start_probability) {
         this.bubbleNum.push(new BGBubble())
@@ -113,9 +122,20 @@
     }
 
     destory() {
+	  this.stop = true
       const cancelAnimationFrame = this.cancelAnimationFrame
       cancelAnimationFrame(this.myReq)
       window.onresize = null
+    }
+	
+	resume() {
+	  this.stop = false
+      const requestAnimationFrame = this.requestAnimationFrame
+      this.myReq = requestAnimationFrame(() => this.start())   
+      window.onresize = () => {
+        this.canvas.width = window.innerWidth
+        this.canvas.height = window.innerHeight
+      }
     }
 
   }
